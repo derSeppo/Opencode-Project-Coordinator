@@ -560,7 +560,7 @@ Generate clean, well-documented, and production-ready code.
 Follow best practices and include appropriate error handling.
 Respond with code only, no explanations unless explicitly requested."""
     
-    def get_stats(self) -> Dict[str, Any]:
+    async def get_stats(self) -> Dict[str, Any]:
         """Get statistics about tasks"""
         async with self._lock:
             tasks = list(self._tasks.values())

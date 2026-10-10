@@ -18,6 +18,29 @@
 
 The **OpenCode AI Coordinator** is a production-ready web application that coordinates multiple AI providers to handle code-related tasks. This guide covers all aspects of deploying and managing the coordinator on your server.
 
+### Supported AI Providers
+
+The coordinator supports **12 AI providers** divided into two categories:
+
+#### Free Cloud-Based Providers
+| Provider | Status | Free Tier | Models | Priority |
+|----------|--------|-----------|--------|----------|
+| [HuggingFace](https://huggingface.co/) | ✅ Active | 100K+ free models | Mistral, Llama, etc. | Recommended |
+| [Together AI](https://together.ai/) | ✅ Active | $25/month credit | Llama, Mistral | Recommended |
+| [DeepInfra](https://deepinfra.com/) | ✅ Active | Generous free tier | CodeLlama, etc. | Recommended |
+| [Perplexity AI](https://perplexity.ai/) | ✅ Active | Free access | Llama 3.1, etc. | Recommended |
+| [Cerebras](https://cerebras.net/) | ✅ Active | Free inference | Llama, Mistral, Gemma | Recommended |
+
+#### Paid Providers
+| Provider | Status | Pricing | Models | Priority |
+|----------|--------|---------|--------|----------|
+| [OpenAI](https://openai.com/) | ✅ Active | Pay-per-use | GPT-4, GPT-3.5 | High |
+| [Anthropic](https://anthropic.com/) | ✅ Active | Pay-per-use | Claude 3 | High |
+| [Mistral AI](https://mistral.ai/) | ✅ Active | Pay-per-use | Mistral, Mixtral | High |
+| [Google AI](https://ai.google.com/) | ✅ Active | Pay-per-use | Gemini | High |
+| [Cohere](https://cohere.com/) | ✅ Active | Pay-per-use | Command | Medium |
+| [Groq](https://groq.com/) | ✅ Active | Pay-per-use | Llama, Mixtral, Gemma | Medium |
+
 ---
 
 ## Prerequisites
@@ -221,7 +244,76 @@ CODE_DEFAULT_TEMPERATURE=0.7
 
 ### AI Provider Configuration
 
-#### OpenAI
+#### Free Cloud-Based Providers
+
+##### HuggingFace
+
+```bash
+# HuggingFace Inference API - 100,000+ free models
+HUGGINGFACE_API_KEY="hf_..."  # Optional, get from https://huggingface.co/settings/tokens
+HUGGINGFACE_BASE_URL="https://api-inference.huggingface.co"
+HUGGINGFACE_RATE_LIMIT=100
+HUGGINGFACE_TIMEOUT=120
+HUGGINGFACE_ENABLED=true
+HUGGINGFACE_PRIORITY=1
+# Available models: mistralai/Mistral-7B-Instruct-v0.2, meta-llama/Llama-2-7b-chat-hf, etc.
+```
+
+##### Together AI
+
+```bash
+# Together AI - $25/month free credit
+TOGETHER_API_KEY="..."  # Get from https://api.together.xyz/
+TOGETHER_BASE_URL="https://api.together.xyz/v1"
+TOGETHER_RATE_LIMIT=100
+TOGETHER_TIMEOUT=120
+TOGETHER_ENABLED=true
+TOGETHER_PRIORITY=2
+# Available models: meta-llama/Llama-2-7b-chat, mistralai/Mistral-7B-Instruct-v0.1, etc.
+```
+
+##### DeepInfra
+
+```bash
+# DeepInfra - Generous free tier
+DEEPINFRA_API_KEY="..."  # Get from https://deepinfra.com/
+DEEPINFRA_BASE_URL="https://api.deepinfra.com/v1"
+DEEPINFRA_RATE_LIMIT=100
+DEEPINFRA_TIMEOUT=120
+DEEPINFRA_ENABLED=true
+DEEPINFRA_PRIORITY=3
+# Available models: mistralai/Mistral-7B-Instruct-v0.1, meta-llama/Llama-2-7b-chat-hf, etc.
+```
+
+##### Perplexity AI
+
+```bash
+# Perplexity AI - Free access
+PERPLEXITY_API_KEY="..."  # Get from https://www.perplexity.ai/
+PERPLEXITY_BASE_URL="https://api.perplexity.ai"
+PERPLEXITY_RATE_LIMIT=100
+PERPLEXITY_TIMEOUT=120
+PERPLEXITY_ENABLED=true
+PERPLEXITY_PRIORITY=4
+# Available models: llama-3.1-sonar-small-128k-online, llama-3.1-70b-instruct, etc.
+```
+
+##### Cerebras
+
+```bash
+# Cerebras - Free inference
+CEREBRAS_API_KEY="..."  # Get from https://inference.cerebras.net/
+CEREBRAS_BASE_URL="https://inference.cerebras.net/v1"
+CEREBRAS_RATE_LIMIT=100
+CEREBRAS_TIMEOUT=120
+CEREBRAS_ENABLED=true
+CEREBRAS_PRIORITY=5
+# Available models: llama-3.1-70b, llama-3.1-8b, mistral-7b, mixtral-8x7b, etc.
+```
+
+#### Paid Providers
+
+##### OpenAI
 
 ```bash
 OPENAI_API_KEY="sk-..."
@@ -229,10 +321,10 @@ OPENAI_BASE_URL="https://api.openai.com/v1"
 OPENAI_RATE_LIMIT=100
 OPENAI_TIMEOUT=120
 OPENAI_ENABLED=true
-OPENAI_PRIORITY=1
+OPENAI_PRIORITY=6
 ```
 
-#### Anthropic
+##### Anthropic
 
 ```bash
 ANTHROPIC_API_KEY="sk-ant-..."
@@ -240,10 +332,10 @@ ANTHROPIC_BASE_URL="https://api.anthropic.com/v1"
 ANTHROPIC_RATE_LIMIT=100
 ANTHROPIC_TIMEOUT=120
 ANTHROPIC_ENABLED=true
-ANTHROPIC_PRIORITY=2
+ANTHROPIC_PRIORITY=7
 ```
 
-#### Mistral AI
+##### Mistral AI
 
 ```bash
 MISTRAL_API_KEY="..."
@@ -251,10 +343,10 @@ MISTRAL_BASE_URL="https://api.mistral.ai/v1"
 MISTRAL_RATE_LIMIT=100
 MISTRAL_TIMEOUT=120
 MISTRAL_ENABLED=true
-MISTRAL_PRIORITY=3
+MISTRAL_PRIORITY=8
 ```
 
-#### Google (Gemini)
+##### Google (Gemini)
 
 ```bash
 GOOGLE_API_KEY="..."
@@ -262,10 +354,10 @@ GOOGLE_BASE_URL="https://generativelanguage.googleapis.com/v1beta"
 GOOGLE_RATE_LIMIT=100
 GOOGLE_TIMEOUT=120
 GOOGLE_ENABLED=false
-GOOGLE_PRIORITY=4
+GOOGLE_PRIORITY=9
 ```
 
-#### Cohere
+##### Cohere
 
 ```bash
 COHERE_API_KEY="..."
@@ -273,7 +365,7 @@ COHERE_BASE_URL="https://api.cohere.ai/v1"
 COHERE_RATE_LIMIT=100
 COHERE_TIMEOUT=120
 COHERE_ENABLED=false
-COHERE_PRIORITY=5
+COHERE_PRIORITY=10
 ```
 
 #### Groq

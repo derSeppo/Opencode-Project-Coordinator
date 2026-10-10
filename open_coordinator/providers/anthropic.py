@@ -43,11 +43,14 @@ class AnthropicProvider(BaseProvider):
     }
     
     def _get_default_base_url(self) -> str:
-        return "https://api.anthropic.com/v1"
+        return "https://api.anthropic.com/v1/"
     
     def _get_headers(self) -> Dict[str, str]:
         headers = super()._get_headers()
-        headers["X-API-Key"] = self.api_key or ""
+        if self.api_key:
+            headers["X-API-Key"] = self.api_key
+        headers.pop("Authorization", None)  # Anthropic uses X-API-Key, not Authorization
+        return headers
         headers["Anthropic-Version"] = "2023-06-01"
         if "X-API-Key" in headers:
             del headers["Authorization"]

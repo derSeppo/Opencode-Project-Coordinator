@@ -31,6 +31,7 @@ from open_coordinator.models.task import (
     TaskType,
     TemplateRequest,
 )
+from open_coordinator.api.web_routes import setup_web_routes
 from open_coordinator.providers.factory import (
     get_provider_factory,
     initialize_providers,
@@ -80,6 +81,9 @@ app = FastAPI(
     openapi_url="/openapi.json",
 )
 
+
+# Setup web interface
+setup_web_routes(app)
 
 # Configure CORS
 app.add_middleware(
@@ -131,7 +135,7 @@ async def health_check() -> Dict[str, str]:
 
 # Endpoint: Ready check
 @app.get("/ready", tags=["health"])
-async def ready_check() -> Dict[str, str]:
+async def ready_check() -> Dict[str, Any]:
     """Ready check endpoint"""
     try:
         manager = get_task_manager()
@@ -616,11 +620,13 @@ async def http_exception_handler(request: Request, exc: HTTPException) -> JSONRe
 async def general_exception_handler(request: Request, exc: Exception) -> JSONResponse:
     """Handle unexpected exceptions"""
     logger.error(f"Unexpected error: {exc}", exc_info=True)
+    from open_coordinator.config.settings import get_settings
+    settings = get_settings()
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={
             "error": "Internal server error",
-            "detail": str(exc) if settings.debug else None
+            "detail": str(exc) if settings.server.debug else None
         }
     )
 

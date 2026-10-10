@@ -17,6 +17,8 @@ from open_coordinator.models.task import ProviderType
 
 class ProviderSettings(BaseSettings):
     """Settings for a single AI provider"""
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+    
     api_key: Optional[str] = Field(None, description="API key for the provider")
     base_url: Optional[str] = Field(None, description="Custom base URL")
     rate_limit: int = Field(default=100, description="Rate limit per minute")
@@ -24,16 +26,14 @@ class ProviderSettings(BaseSettings):
     enabled: bool = Field(default=True, description="Whether this provider is enabled")
     priority: int = Field(default=1, description="Priority (lower = higher priority)")
     models: List[str] = Field(default_factory=list, description="Available models")
-    
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
 
 
 class OpenAISettings(ProviderSettings):
     """OpenAI specific settings"""
+    model_config = SettingsConfigDict(extra="ignore")
+    
     provider_type: ProviderType = ProviderType.OPENAI
-    base_url: str = "https://api.openai.com/v1"
+    base_url: str = "https://api.openai.com/v1/"
     models: List[str] = [
         "gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-4", "gpt-3.5-turbo",
         "gpt-3.5-turbo-16k", "gpt-3.5-turbo-instruct"
@@ -42,8 +42,10 @@ class OpenAISettings(ProviderSettings):
 
 class AnthropicSettings(ProviderSettings):
     """Anthropic specific settings"""
+    model_config = SettingsConfigDict(extra="ignore")
+    
     provider_type: ProviderType = ProviderType.ANTHROPIC
-    base_url: str = "https://api.anthropic.com/v1"
+    base_url: str = "https://api.anthropic.com/v1/"
     models: List[str] = [
         "claude-3-5-sonnet", "claude-3-haiku", "claude-3-sonnet", 
         "claude-3-opus", "claude-2-1", "claude-2"
@@ -52,8 +54,10 @@ class AnthropicSettings(ProviderSettings):
 
 class MistralSettings(ProviderSettings):
     """Mistral AI specific settings"""
+    model_config = SettingsConfigDict(extra="ignore")
+    
     provider_type: ProviderType = ProviderType.MISTRAL
-    base_url: str = "https://api.mistral.ai/v1"
+    base_url: str = "https://api.mistral.ai/v1/"
     models: List[str] = [
         "mistral-large", "mistral-small", "mistral-tiny",
         "mixtral-8x7b", "mixtral-8x22b"
@@ -62,8 +66,10 @@ class MistralSettings(ProviderSettings):
 
 class GoogleSettings(ProviderSettings):
     """Google AI specific settings"""
+    model_config = SettingsConfigDict(extra="ignore")
+    
     provider_type: ProviderType = ProviderType.GOOGLE
-    base_url: str = "https://generativelanguage.googleapis.com/v1beta"
+    base_url: str = "https://generativelanguage.googleapis.com/v1beta/"
     models: List[str] = [
         "gemini-1.5-pro", "gemini-1.5-flash", "gemini-1.0-pro"
     ]
@@ -71,8 +77,10 @@ class GoogleSettings(ProviderSettings):
 
 class CohereSettings(ProviderSettings):
     """Cohere specific settings"""
+    model_config = SettingsConfigDict(extra="ignore")
+    
     provider_type: ProviderType = ProviderType.COHERE
-    base_url: str = "https://api.cohere.ai/v1"
+    base_url: str = "https://api.cohere.ai/v1/"
     models: List[str] = [
         "command-r", "command-r-plus", "command"
     ]
@@ -80,8 +88,10 @@ class CohereSettings(ProviderSettings):
 
 class GroqSettings(ProviderSettings):
     """Groq specific settings"""
+    model_config = SettingsConfigDict(extra="ignore")
+    
     provider_type: ProviderType = ProviderType.GROQ
-    base_url: str = "https://api.groq.com/v1"
+    base_url: str = "https://api.groq.com/v1/"
     models: List[str] = [
         "llama3-8b-8192", "llama3-70b-8192", "mixtral-8x7b-32768",
         "gemma-7b-it", "gemma2-9b-it"
@@ -90,15 +100,19 @@ class GroqSettings(ProviderSettings):
 
 class LocalSettings(ProviderSettings):
     """Local/LLM specific settings"""
+    model_config = SettingsConfigDict(extra="ignore")
+    
     provider_type: ProviderType = ProviderType.LOCAL
-    base_url: str = "http://localhost:11434/v1"
+    base_url: str = "http://localhost:11434/v1/"
     models: List[str] = ["llama2", "mistral", "phi3"]
 
 
 class HuggingFaceSettings(ProviderSettings):
     """HuggingFace specific settings"""
+    model_config = SettingsConfigDict(extra="ignore")
+    
     provider_type: ProviderType = ProviderType.HUGGINGFACE
-    base_url: str = "https://api-inference.huggingface.co"
+    base_url: str = "https://api-inference.huggingface.co/"
     models: List[str] = [
         "mistralai/Mistral-7B-Instruct-v0.2",
         "mistralai/Mixtral-8x7B-Instruct-v0.1",
@@ -110,8 +124,10 @@ class HuggingFaceSettings(ProviderSettings):
 
 class TogetherSettings(ProviderSettings):
     """Together AI specific settings"""
+    model_config = SettingsConfigDict(extra="ignore")
+    
     provider_type: ProviderType = ProviderType.TOGETHER
-    base_url: str = "https://api.together.xyz/v1"
+    base_url: str = "https://api.together.xyz/v1/"
     models: List[str] = [
         "meta-llama/Llama-2-7b-chat",
         "meta-llama/Llama-2-13b-chat",
@@ -123,8 +139,10 @@ class TogetherSettings(ProviderSettings):
 
 class DeepInfraSettings(ProviderSettings):
     """DeepInfra specific settings"""
+    model_config = SettingsConfigDict(extra="ignore")
+    
     provider_type: ProviderType = ProviderType.DEEPINFRA
-    base_url: str = "https://api.deepinfra.com/v1"
+    base_url: str = "https://api.deepinfra.com/v1/"
     models: List[str] = [
         "mistralai/Mistral-7B-Instruct-v0.1",
         "mistralai/Mixtral-8x7B-Instruct-v0.1",
@@ -136,8 +154,10 @@ class DeepInfraSettings(ProviderSettings):
 
 class PerplexitySettings(ProviderSettings):
     """Perplexity AI specific settings"""
+    model_config = SettingsConfigDict(extra="ignore")
+    
     provider_type: ProviderType = ProviderType.PERPLEXITY
-    base_url: str = "https://api.perplexity.ai"
+    base_url: str = "https://api.perplexity.ai/"
     models: List[str] = [
         "llama-3.1-sonar-small-128k-online",
         "llama-3.1-sonar-large-128k-online",
@@ -149,8 +169,10 @@ class PerplexitySettings(ProviderSettings):
 
 class CerebrasSettings(ProviderSettings):
     """Cerebras specific settings"""
+    model_config = SettingsConfigDict(extra="ignore")
+    
     provider_type: ProviderType = ProviderType.CEREBRAS
-    base_url: str = "https://inference.cerebras.net/v1"
+    base_url: str = "https://inference.cerebras.net/v1/"
     models: List[str] = [
         "llama-3.1-70b",
         "llama-3.1-8b",
@@ -165,6 +187,8 @@ class CerebrasSettings(ProviderSettings):
 
 class ProviderConfigs(BaseSettings):
     """All provider configurations"""
+    model_config = SettingsConfigDict(extra="ignore")
+    
     openai: OpenAISettings = Field(default_factory=OpenAISettings)
     anthropic: AnthropicSettings = Field(default_factory=AnthropicSettings)
     mistral: MistralSettings = Field(default_factory=MistralSettings)
@@ -181,7 +205,7 @@ class ProviderConfigs(BaseSettings):
 
 class DatabaseSettings(BaseSettings):
     """Database configuration"""
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
     
     database_url: str = Field(
         default="sqlite:///./open_coordinator.db",
@@ -198,7 +222,7 @@ class DatabaseSettings(BaseSettings):
 
 class RedisSettings(BaseSettings):
     """Redis configuration for caching and task queue"""
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
     
     redis_url: RedisDsn = Field(
         default="redis://localhost:6379/0",
@@ -210,7 +234,7 @@ class RedisSettings(BaseSettings):
 
 class RateLimitSettings(BaseSettings):
     """Rate limiting configuration"""
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
     
     enabled: bool = Field(default=True, description="Whether rate limiting is enabled")
     requests_per_minute: int = Field(default=1000, description="Requests per minute limit")
@@ -220,7 +244,7 @@ class RateLimitSettings(BaseSettings):
 
 class SecuritySettings(BaseSettings):
     """Security configuration"""
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
     
     api_key_required: bool = Field(default=True, description="Whether API key is required")
     api_keys: List[str] = Field(default_factory=list, description="List of valid API keys")
@@ -242,7 +266,7 @@ class SecuritySettings(BaseSettings):
 
 class LoggingSettings(BaseSettings):
     """Logging configuration"""
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
     
     level: str = Field(default="INFO", description="Logging level")
     log_file: Optional[str] = Field(default=None, description="Log file path")
@@ -255,7 +279,7 @@ class LoggingSettings(BaseSettings):
 
 class TemplateSettings(BaseSettings):
     """Template configuration"""
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
     
     template_dir: Path = Field(
         default=Path("templates"),
@@ -266,7 +290,7 @@ class TemplateSettings(BaseSettings):
 
 class CodeSettings(BaseSettings):
     """Code generation settings"""
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
     
     default_language: str = Field(default="python", description="Default programming language")
     default_timeout: int = Field(default=300, description="Default timeout in seconds")
@@ -276,7 +300,7 @@ class CodeSettings(BaseSettings):
 
 class ServerSettings(BaseSettings):
     """Server configuration"""
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
     
     host: str = Field(default="0.0.0.0", description="Server host")
     port: int = Field(default=8000, description="Server port")
@@ -287,7 +311,7 @@ class ServerSettings(BaseSettings):
 
 class Settings(BaseSettings):
     """Main application settings"""
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", case_sensitive=False)
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", case_sensitive=False, extra="ignore")
     
     app_name: str = Field(default="OpenCode AI Coordinator", description="Application name")
     app_version: str = Field(default="1.0.0", description="Application version")

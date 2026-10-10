@@ -13,6 +13,31 @@ https://ai.yourdomain.com
 
 ---
 
+## Supported AI Providers
+
+The API supports **12 AI providers** for code generation, validation, and formatting tasks:
+
+### Free Cloud-Based Providers
+| Provider | Endpoint | Free Tier | Models | Status |
+|----------|----------|-----------|--------|--------|
+| **HuggingFace** | `/providers/huggingface` | 100K+ free models | Mistral-7B, Llama-2, etc. | ✅ Active |
+| **Together AI** | `/providers/together` | $25/month credit | Llama-2, Mistral, etc. | ✅ Active |
+| **DeepInfra** | `/providers/deepinfra` | Generous free tier | CodeLlama, etc. | ✅ Active |
+| **Perplexity AI** | `/providers/perplexity` | Free access | Llama 3.1, etc. | ✅ Active |
+| **Cerebras** | `/providers/cerebras` | Free inference | Llama, Mistral, etc. | ✅ Active |
+
+### Paid Providers
+| Provider | Endpoint | Pricing | Models | Status |
+|----------|----------|---------|--------|--------|
+| **OpenAI** | `/providers/openai` | Pay-per-use | GPT-4, GPT-3.5 | ✅ Active |
+| **Anthropic** | `/providers/anthropic` | Pay-per-use | Claude 3 | ✅ Active |
+| **Mistral AI** | `/providers/mistral` | Pay-per-use | Mistral, Mixtral | ✅ Active |
+| **Google AI** | `/providers/google` | Pay-per-use | Gemini | ✅ Active |
+| **Cohere** | `/providers/cohere` | Pay-per-use | Command | ✅ Active |
+| **Groq** | `/providers/groq` | Pay-per-use | Llama, Mixtral, Gemma | ✅ Active |
+
+---
+
 ## Authentication
 
 All endpoints require an API key to be included in the `X-API-Key` header:
@@ -153,8 +178,8 @@ curl -X POST http://localhost:8000/task \
     "task_type": "code_generation",
     "prompt": "Create a Python function to calculate Fibonacci",
     "language": "python",
-    "provider_preference": ["openai", "anthropic"],
-    "model_preference": "gpt-4o",
+    "provider_preference": ["huggingface", "together", "deepinfra"],
+    "model_preference": "mistralai/Mistral-7B-Instruct-v0.2",
     "temperature": 0.7,
     "max_tokens": 2000,
     "priority": "medium",
@@ -170,8 +195,8 @@ curl -X POST http://localhost:8000/task \
   "prompt": "string",
   "code": "string (optional)",
   "language": "python",
-  "provider_preference": ["openai", "anthropic"],
-  "model_preference": "gpt-4o",
+  "provider_preference": ["huggingface", "together", "deepinfra", "perplexity", "cerebras"],
+  "model_preference": "mistralai/Mistral-7B-Instruct-v0.2",
   "temperature": 0.7,
   "max_tokens": 4096,
   "priority": "low|medium|high|critical",
@@ -398,8 +423,8 @@ curl -X POST http://localhost:8000/code/generate \
     "framework": "fastapi",
     "include_comments": true,
     "include_tests": true,
-    "provider_preference": ["openai"],
-    "model_preference": "gpt-4o",
+    "provider_preference": ["huggingface", "together"],
+    "model_preference": "mistralai/Mixtral-8x7B-Instruct-v0.1",
     "temperature": 0.8,
     "max_tokens": 4000
   }'
@@ -413,8 +438,8 @@ curl -X POST http://localhost:8000/code/generate \
   "framework": "string (optional)",
   "include_comments": true,
   "include_tests": false,
-  "provider_preference": ["openai"],
-  "model_preference": "gpt-4o",
+  "provider_preference": ["huggingface", "together", "deepinfra"],
+  "model_preference": "mistralai/Mixtral-8x7B-Instruct-v0.1",
   "temperature": 0.8,
   "max_tokens": 4000
 }

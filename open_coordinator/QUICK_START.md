@@ -2,7 +2,7 @@
 
 ## Overview
 
-The **OpenCode AI Coordinator** is a production-ready webapp that connects to multiple AI providers (OpenAI, Anthropic, Mistral, Google, Cohere, Groq, and local LLMs) to handle code generation, validation, formatting, and other AI-powered tasks.
+The **OpenCode AI Coordinator** is a production-ready webapp that connects to multiple AI providers to handle code generation, validation, formatting, and other AI-powered tasks. It supports **12 AI providers** including both paid and **free cloud-based** options.
 
 This guide will get you up and running in **5 minutes**.
 
@@ -13,7 +13,6 @@ This guide will get you up and running in **5 minutes**.
 ### Hardware Requirements
 - **Minimum**: 2 CPU cores, 4GB RAM, 10GB disk space
 - **Recommended**: 4 CPU cores, 8GB RAM, 20GB disk space
-- **For local LLMs**: Additional GPU recommended
 
 ### Software Requirements
 - Python 3.11 or higher
@@ -22,12 +21,21 @@ This guide will get you up and running in **5 minutes**.
 
 ### API Keys (Optional)
 You'll need API keys for the AI providers you want to use:
-- [OpenAI](https://platform.openai.com/account/api-keys)
-- [Anthropic](https://console.anthropic.com/account/keys)
-- [Mistral AI](https://console.mistral.ai/api-keys)
-- [Google AI (Gemini)](https://makersuite.google.com/app/apikey)
-- [Cohere](https://dashboard.cohere.com/api-keys)
-- [Groq](https://console.groq.com/keys)
+
+#### Paid Providers (API keys required):
+- [OpenAI](https://platform.openai.com/account/api-keys) - GPT-4, GPT-3.5
+- [Anthropic](https://console.anthropic.com/account/keys) - Claude 3 models
+- [Mistral AI](https://console.mistral.ai/api-keys) - Mistral, Mixtral
+- [Google AI (Gemini)](https://makersuite.google.com/app/apikey) - Gemini models
+- [Cohere](https://dashboard.cohere.com/api-keys) - Command models
+- [Groq](https://console.groq.com/keys) - Fast Llama, Mixtral, Gemma
+
+#### Free Cloud-Based Providers (No API key or free tier):
+- [HuggingFace](https://huggingface.co/settings/tokens) - 100,000+ free models
+- [Together AI](https://api.together.xyz/) - $25/month free credit
+- [DeepInfra](https://deepinfra.com/) - Generous free tier
+- [Perplexity AI](https://www.perplexity.ai/) - Free access
+- [Cerebras](https://inference.cerebras.net/) - Free inference
 
 ---
 
@@ -96,21 +104,53 @@ cp .env.example .env
 Edit the `.env` file with your settings:
 
 ```bash
-# Required: At least one API key
+# ============================================================================
+# FREE CLOUD PROVIDERS (No API key required for basic usage)
+# ============================================================================
+
+# HuggingFace (100,000+ free models)
+HUGGINGFACE_API_KEY="your-hf-token"  # Optional, get from https://huggingface.co/settings/tokens
+HUGGINGFACE_ENABLED=true
+HUGGINGFACE_PRIORITY=1
+
+# Together AI ($25/month free credit)
+TOGETHER_API_KEY="your-together-key"  # Get from https://api.together.xyz/
+TOGETHER_ENABLED=true
+TOGETHER_PRIORITY=2
+
+# DeepInfra (Generous free tier)
+DEEPINFRA_API_KEY="your-deepinfra-key"  # Get from https://deepinfra.com/
+DEEPINFRA_ENABLED=true
+DEEPINFRA_PRIORITY=3
+
+# Perplexity AI (Free access)
+PERPLEXITY_API_KEY="your-perplexity-key"  # Get from https://www.perplexity.ai/
+PERPLEXITY_ENABLED=true
+PERPLEXITY_PRIORITY=4
+
+# Cerebras (Free inference)
+CEREBRAS_API_KEY="your-cerebras-key"  # Get from https://inference.cerebras.net/
+CEREBRAS_ENABLED=true
+CEREBRAS_PRIORITY=5
+
+# ============================================================================
+# PAID PROVIDERS (API keys required)
+# ============================================================================
+
+# OpenAI
 OPENAI_API_KEY="your-openai-key"
-# or
-ANTHROPIC_API_KEY="your-anthropic-key"
-# or
-MISTRAL_API_KEY="your-mistral-key"
-
-# Optional: Enable/disable providers
 OPENAI_ENABLED=true
-ANTHROPIC_ENABLED=true
-MISTRAL_ENABLED=true
+OPENAI_PRIORITY=6
 
-# Optional: Set priority (lower = higher priority)
-OPENAI_PRIORITY=1
-ANTHROPIC_PRIORITY=2
+# Anthropic
+ANTHROPIC_API_KEY="your-anthropic-key"
+ANTHROPIC_ENABLED=true
+ANTHROPIC_PRIORITY=7
+
+# Mistral AI
+MISTRAL_API_KEY="your-mistral-key"
+MISTRAL_ENABLED=true
+MISTRAL_PRIORITY=8
 
 # Optional: Security
 SECURITY_API_KEY_REQUIRED=true
@@ -127,11 +167,18 @@ SERVER_DEBUG=true  # Only for development
 The coordinator uses providers in priority order. Set lower numbers for higher priority:
 
 ```bash
-# Use OpenAI first, then Anthropic, then Mistral
-OPENAI_PRIORITY=1
-ANTHROPIC_PRIORITY=2
-MISTRAL_PRIORITY=3
+# Use free providers first (recommended for testing)
+HUGGINGFACE_PRIORITY=1
+TOGETHER_PRIORITY=2
+DEEPINFRA_PRIORITY=3
+
+# Then paid providers
+OPENAI_PRIORITY=4
+ANTHROPIC_PRIORITY=5
+MISTRAL_PRIORITY=6
 ```
+
+**Tip**: Start with free providers to test the system before adding paid API keys!
 
 ---
 
@@ -337,6 +384,11 @@ curl -X POST http://localhost:8000/execute \
 ### OpenAPI Specification
 - **URL**: http://localhost:8000/openapi.json
 - Raw OpenAPI JSON specification
+
+### Web Interface
+- **URL**: http://localhost:8000/web/
+- Simple web-based UI for managing tasks and viewing statistics
+- Works on Linux, Windows, and macOS
 
 ---
 

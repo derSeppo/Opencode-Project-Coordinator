@@ -1,11 +1,11 @@
 # OpenCode AI Coordinator - Examples
 
-This document provides practical examples and use cases for the OpenCode AI Coordinator.
+This document provides practical examples and use cases for the OpenCode AI Coordinator. All examples work with **free cloud-based AI providers** by default.
 
 ---
 
 ## Table of Contents
-1. [Schnellstart Examples](#schnellstart-examples)
+1. [Quick Start Examples](#quick-start-examples)
 2. [Code Generation Examples](#code-generation-examples)
 3. [Code Validation Examples](#code-validation-examples)
 4. [Code Formatting Examples](#code-formatting-examples)
@@ -14,6 +14,22 @@ This document provides practical examples and use cases for the OpenCode AI Coor
 7. [Batch Processing Examples](#batch-processing-examples)
 8. [Webhook Integration Examples](#webhook-integration-examples)
 9. [Advanced Use Cases](#advanced-use-cases)
+
+---
+
+## Free Cloud Providers Summary
+
+All examples below can use these **free cloud-based providers**:
+
+| Provider | Models | Use Case | Priority |
+|----------|--------|----------|----------|
+| **HuggingFace** | Mistral-7B, Llama-2, CodeLlama | General code generation | 1 |
+| **Together AI** | Llama-2, Mistral, Mixtral | Fast inference | 2 |
+| **DeepInfra** | CodeLlama, Mistral | Code-specific tasks | 3 |
+| **Perplexity AI** | Llama 3.1, Mixtral | Latest models | 4 |
+| **Cerebras** | Llama, Mistral, Gemma | High-performance | 5 |
+
+**Configuration**: Set `HUGGINGFACE_ENABLED=true`, `TOGETHER_ENABLED=true`, etc. in your `.env` file.
 
 ---
 
@@ -60,6 +76,8 @@ headers = {"Content-Type": "application/json"}
 data = {
     "prompt": "Create a Python function to calculate the factorial of a number",
     "language": "python",
+    "provider_preference": ["huggingface", "together", "deepinfra"],
+    "model_preference": "mistralai/Mistral-7B-Instruct-v0.2",
     "temperature": 0.7,
     "max_tokens": 1000
 }
@@ -104,6 +122,8 @@ url = "http://localhost:8000/code/generate"
 data = {
     "prompt": "Create a Python class for a BankAccount with deposit, withdraw, and get_balance methods",
     "language": "python",
+    "provider_preference": ["together", "huggingface"],
+    "model_preference": "meta-llama/Llama-2-7b-chat",
     "temperature": 0.5,
     "max_tokens": 2000
 }
@@ -162,6 +182,8 @@ data = {
     "framework": "fastapi",
     "include_comments": True,
     "include_tests": True,
+    "provider_preference": ["deepinfra", "cerebras"],
+    "model_preference": "mistralai/Mixtral-8x7B-Instruct-v0.1",
     "max_tokens": 4000
 }
 
@@ -599,9 +621,9 @@ url = "http://localhost:8000/code/generate"
 data = {
     "prompt": "Create a complex algorithm in Python",
     "language": "python",
-    # Prefer OpenAI, fallback to Anthropic, then Mistral
-    "provider_preference": ["openai", "anthropic", "mistral"],
-    "model_preference": "gpt-4o",
+    # Prefer free providers, fallback order
+    "provider_preference": ["huggingface", "together", "deepinfra", "perplexity", "cerebras"],
+    "model_preference": "mistralai/Mixtral-8x7B-Instruct-v0.1",
     "temperature": 0.7
 }
 
@@ -624,7 +646,8 @@ url = "http://localhost:8000/code/generate"
 data = {
     "prompt": "Generate code that requires a very large context",
     "language": "python",
-    "provider_preference": ["anthropic", "openai", "mistral"],
+    # Free providers with fallback order
+    "provider_preference": ["together", "huggingface", "deepinfra", "cerebras", "perplexity"],
     "max_tokens": 8000
 }
 
