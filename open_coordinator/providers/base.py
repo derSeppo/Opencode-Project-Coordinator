@@ -10,9 +10,11 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import aiohttp
 import backoff
+from pydantic import BaseModel
 
 from open_coordinator.config.settings import get_provider_settings, ProviderSettings
-from open_coordinator.models.task import ProviderType, TaskStatus
+from open_coordinator.models.task import ProviderType
+from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
 

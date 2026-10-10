@@ -13,6 +13,11 @@ from open_coordinator.providers.google import GoogleProvider
 from open_coordinator.providers.cohere import CohereProvider
 from open_coordinator.providers.groq import GroqProvider
 from open_coordinator.providers.local import LocalProvider
+from open_coordinator.providers.huggingface import HuggingFaceProvider
+from open_coordinator.providers.together import TogetherProvider
+from open_coordinator.providers.deepinfra import DeepInfraProvider
+from open_coordinator.providers.perplexity import PerplexityProvider
+from open_coordinator.providers.cerebras import CerebrasProvider
 
 logger = logging.getLogger(__name__)
 
@@ -26,8 +31,11 @@ PROVIDER_CLASSES: Dict[ProviderType, Type[BaseProvider]] = {
     ProviderType.COHERE: CohereProvider,
     ProviderType.GROQ: GroqProvider,
     ProviderType.LOCAL: LocalProvider,
-    ProviderType.HUGGINGFACE: LocalProvider,  # Fallback for HuggingFace
-    ProviderType.TOGETHER: LocalProvider,  # Fallback for Together
+    ProviderType.HUGGINGFACE: HuggingFaceProvider,
+    ProviderType.TOGETHER: TogetherProvider,
+    ProviderType.DEEPINFRA: DeepInfraProvider,
+    ProviderType.PERPLEXITY: PerplexityProvider,
+    ProviderType.CEREBRAS: CerebrasProvider,
 }
 
 

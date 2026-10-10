@@ -4,9 +4,13 @@ import os
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+from enum import Enum
 
-from pydantic import BaseSettings, Field, PostgresDsn, RedisDsn
-from pydantic.typing import AnyHttpUrl
+from pydantic_settings import BaseSettings
+from pydantic import Field, PostgresDsn, RedisDsn
+from pydantic import HttpUrl
+from pydantic_settings import SettingsConfigDict
+from typing import Any
 
 from open_coordinator.models.task import ProviderType
 
@@ -76,7 +80,7 @@ class CohereSettings(ProviderSettings):
 
 class GroqSettings(ProviderSettings):
     """Groq specific settings"""
-    provider_type: ProviderType.GROQ
+    provider_type: ProviderType = ProviderType.GROQ
     base_url: str = "https://api.groq.com/v1"
     models: List[str] = [
         "llama3-8b-8192", "llama3-70b-8192", "mixtral-8x7b-32768",
@@ -93,16 +97,70 @@ class LocalSettings(ProviderSettings):
 
 class HuggingFaceSettings(ProviderSettings):
     """HuggingFace specific settings"""
-    provider_type: ProviderType.HUGGINGFACE
+    provider_type: ProviderType = ProviderType.HUGGINGFACE
     base_url: str = "https://api-inference.huggingface.co"
-    models: List[str] = []
+    models: List[str] = [
+        "mistralai/Mistral-7B-Instruct-v0.2",
+        "mistralai/Mixtral-8x7B-Instruct-v0.1",
+        "meta-llama/Llama-2-7b-chat-hf",
+        "meta-llama/Llama-2-13b-chat-hf",
+        "google/flan-t5-xxl",
+    ]
 
 
 class TogetherSettings(ProviderSettings):
     """Together AI specific settings"""
-    provider_type: ProviderType.TOGETHER
+    provider_type: ProviderType = ProviderType.TOGETHER
     base_url: str = "https://api.together.xyz/v1"
-    models: List[str] = []
+    models: List[str] = [
+        "meta-llama/Llama-2-7b-chat",
+        "meta-llama/Llama-2-13b-chat",
+        "meta-llama/Llama-2-70b-chat",
+        "mistralai/Mistral-7B-Instruct-v0.1",
+        "mistralai/Mixtral-8x7B-Instruct-v0.1",
+    ]
+
+
+class DeepInfraSettings(ProviderSettings):
+    """DeepInfra specific settings"""
+    provider_type: ProviderType = ProviderType.DEEPINFRA
+    base_url: str = "https://api.deepinfra.com/v1"
+    models: List[str] = [
+        "mistralai/Mistral-7B-Instruct-v0.1",
+        "mistralai/Mixtral-8x7B-Instruct-v0.1",
+        "meta-llama/Llama-2-7b-chat-hf",
+        "meta-llama/Llama-2-13b-chat-hf",
+        "codellama/CodeLlama-7b-Instruct-hf",
+    ]
+
+
+class PerplexitySettings(ProviderSettings):
+    """Perplexity AI specific settings"""
+    provider_type: ProviderType = ProviderType.PERPLEXITY
+    base_url: str = "https://api.perplexity.ai"
+    models: List[str] = [
+        "llama-3.1-sonar-small-128k-online",
+        "llama-3.1-sonar-large-128k-online",
+        "llama-3.1-70b-instruct",
+        "llama-3-70b-instruct",
+        "mixtral-8x7b-instruct",
+    ]
+
+
+class CerebrasSettings(ProviderSettings):
+    """Cerebras specific settings"""
+    provider_type: ProviderType = ProviderType.CEREBRAS
+    base_url: str = "https://inference.cerebras.net/v1"
+    models: List[str] = [
+        "llama-3.1-70b",
+        "llama-3.1-8b",
+        "llama-3-70b",
+        "llama-3-8b",
+        "mistral-7b",
+        "mixtral-8x7b",
+        "gemma-7b",
+        "gemma-2-9b",
+    ]
 
 
 class ProviderConfigs(BaseSettings):
@@ -116,10 +174,15 @@ class ProviderConfigs(BaseSettings):
     local: LocalSettings = Field(default_factory=LocalSettings)
     huggingface: HuggingFaceSettings = Field(default_factory=HuggingFaceSettings)
     together: TogetherSettings = Field(default_factory=TogetherSettings)
+    deepinfra: DeepInfraSettings = Field(default_factory=DeepInfraSettings)
+    perplexity: PerplexitySettings = Field(default_factory=PerplexitySettings)
+    cerebras: CerebrasSettings = Field(default_factory=CerebrasSettings)
 
 
 class DatabaseSettings(BaseSettings):
     """Database configuration"""
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    
     database_url: str = Field(
         default="sqlite:///./open_coordinator.db",
         description="Database URL"
@@ -135,6 +198,8 @@ class DatabaseSettings(BaseSettings):
 
 class RedisSettings(BaseSettings):
     """Redis configuration for caching and task queue"""
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    
     redis_url: RedisDsn = Field(
         default="redis://localhost:6379/0",
         description="Redis connection URL"
@@ -145,6 +210,8 @@ class RedisSettings(BaseSettings):
 
 class RateLimitSettings(BaseSettings):
     """Rate limiting configuration"""
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    
     enabled: bool = Field(default=True, description="Whether rate limiting is enabled")
     requests_per_minute: int = Field(default=1000, description="Requests per minute limit")
     requests_per_hour: int = Field(default=10000, description="Requests per hour limit")
@@ -153,6 +220,8 @@ class RateLimitSettings(BaseSettings):
 
 class SecuritySettings(BaseSettings):
     """Security configuration"""
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    
     api_key_required: bool = Field(default=True, description="Whether API key is required")
     api_keys: List[str] = Field(default_factory=list, description="List of valid API keys")
     cors_origins: List[str] = Field(
@@ -173,6 +242,8 @@ class SecuritySettings(BaseSettings):
 
 class LoggingSettings(BaseSettings):
     """Logging configuration"""
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    
     level: str = Field(default="INFO", description="Logging level")
     log_file: Optional[str] = Field(default=None, description="Log file path")
     log_format: str = Field(
@@ -184,6 +255,8 @@ class LoggingSettings(BaseSettings):
 
 class TemplateSettings(BaseSettings):
     """Template configuration"""
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    
     template_dir: Path = Field(
         default=Path("templates"),
         description="Directory for code templates"
@@ -193,6 +266,8 @@ class TemplateSettings(BaseSettings):
 
 class CodeSettings(BaseSettings):
     """Code generation settings"""
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    
     default_language: str = Field(default="python", description="Default programming language")
     default_timeout: int = Field(default=300, description="Default timeout in seconds")
     max_tokens: int = Field(default=32768, description="Maximum tokens per request")
@@ -201,6 +276,8 @@ class CodeSettings(BaseSettings):
 
 class ServerSettings(BaseSettings):
     """Server configuration"""
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    
     host: str = Field(default="0.0.0.0", description="Server host")
     port: int = Field(default=8000, description="Server port")
     debug: bool = Field(default=False, description="Enable debug mode")
@@ -210,6 +287,8 @@ class ServerSettings(BaseSettings):
 
 class Settings(BaseSettings):
     """Main application settings"""
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", case_sensitive=False)
+    
     app_name: str = Field(default="OpenCode AI Coordinator", description="Application name")
     app_version: str = Field(default="1.0.0", description="Application version")
     app_description: str = Field(
@@ -230,11 +309,6 @@ class Settings(BaseSettings):
     
     # Environment
     environment: str = Field(default="development", description="Environment (development, staging, production)")
-    
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        case_sensitive = False
 
 
 @lru_cache()
@@ -262,5 +336,8 @@ def get_provider_settings(provider_type: ProviderType) -> ProviderSettings:
         ProviderType.LOCAL: settings.providers.local,
         ProviderType.HUGGINGFACE: settings.providers.huggingface,
         ProviderType.TOGETHER: settings.providers.together,
+        ProviderType.DEEPINFRA: settings.providers.deepinfra,
+        ProviderType.PERPLEXITY: settings.providers.perplexity,
+        ProviderType.CEREBRAS: settings.providers.cerebras,
     }
     return provider_map.get(provider_type, ProviderSettings())

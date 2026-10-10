@@ -40,6 +40,9 @@ class ProviderType(str, Enum):
     LOCAL = "local"
     HUGGINGFACE = "huggingface"
     TOGETHER = "together"
+    DEEPINFRA = "deepinfra"
+    PERPLEXITY = "perplexity"
+    CEREBRAS = "cerebras"
 
 
 class TaskPriority(str, Enum):
